@@ -1,5 +1,5 @@
 const express = require('express');
-const exphbs = require('express-handlebars');   //fron-end
+const exphbs = require('express-handlebars');   //front-end
 //const mongoose = require('mongoose');
 
 const app = express();

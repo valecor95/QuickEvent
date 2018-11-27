@@ -10,6 +10,9 @@ require('./models/User');
 
 //Passport config
 require('./config/passport')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 //load routes
 const index = require('./routes/index');

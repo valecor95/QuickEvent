@@ -1,6 +1,6 @@
 const express = require('express');
-//const mongoose = require('mongoose');
 const router = express.Router();
+const passport = require('passport');
 
 //log in routes
 router.get('/login', (req,res) =>{
@@ -11,6 +11,5 @@ router.get('/login', (req,res) =>{
 router.get('/register', (req,res) =>{
   res.render('users/register');
 });
-
 
 module.exports = router;

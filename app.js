@@ -10,6 +10,7 @@ const app = express();
 
 //load user model
 require('./models/User');
+require('./models/Event');
 
 //Passport config
 require('./config/passport')(passport);
@@ -22,6 +23,12 @@ const auth = require('./routes/auth');
 //load key
 const keys = require('./config/keys.js');
 
+//handlebars helpers
+const {
+  stripTags,
+  formatDate
+} = require('./helpers/hbs');
+
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
 //connect to mongoose
@@ -32,7 +39,12 @@ mongoose.connect(keys.mongoURI, {
   .catch(err => console.log(err));
 
 //handlebars middleware
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({
+  helpers: {
+    stripTags: stripTags,
+    formatDate: formatDate
+  },
+  defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 //body parser middleware

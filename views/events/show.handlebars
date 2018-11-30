@@ -1,0 +1,11 @@
+<div class="card card-body mb-2">
+  <h4 align="center">{{event.name}}</h4>
+  <p><b>Date:</b> {{formatDate event.date 'MMMM Do YYYY'}}</p>
+  <p><b>Time:</b> {{formatDate event.date 'HH:mm'}}</p>
+  <p><b>location:</b>  {{event.location}}</p>
+  <p><b>Event created by:</b>  {{event.creator.firstName}} {{event.creator.lastName}}</p>
+  <p><b>Email:</b> {{event.creator.email}}</p>
+  <p><b>details:</b> {{stripTags event.details}}</p>
+  <hr/>
+  join
+</div>

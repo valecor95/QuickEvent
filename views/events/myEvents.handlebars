@@ -1,7 +1,35 @@
 <h4>Events joined</h4>
 <hr>
+{{#each eventsjoined}}
+  <div class="card card-body mb-2">
+    <h4 align="center">{{name}}</h4>
+    <p><b>Date:</b> {{formatDate date 'MMMM Do YYYY'}}</p>
+    <p><b>Time:</b> {{formatDate date 'HH:mm'}}</p>
+    <p><b>location:</b>  {{location}}</p>
+    <hr/>
+    <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more for details</a>
+    disjoin
+  </div>
+{{else}}
+  <p>No events found</p>
+{{/each}}
+
 
 
 <br/><br/>
 <h4>Events created</h4>
 <hr>
+{{#each myevents}}
+  <div class="card card-body mb-2">
+    <h4 align="center">{{name}}</h4>
+    <p><b>Date:</b> {{formatDate date 'MMMM Do YYYY'}}</p>
+    <p><b>Time:</b> {{formatDate date 'HH:mm'}}</p>
+    <p><b>location:</b>  {{location}}</p>
+    <hr/>
+    <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more for details</a>
+    <a href="/events/editEvents/{{id}}" class="btn btn-primary btn-block mb-2">Edit event</a>
+    delete
+  </div>
+{{else}}
+  <p>No events found</p>
+{{/each}}

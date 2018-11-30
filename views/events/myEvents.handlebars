@@ -27,8 +27,16 @@
     <p><b>location:</b>  {{location}}</p>
     <hr/>
     <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more for details</a>
-    <a href="/events/editEvents/{{id}}" class="btn btn-primary btn-block mb-2">Edit event</a>
-    delete
+    <a href="/events/editEvent/{{id}}" class="btn btn-primary btn-block mb-2">
+      <i class="fa fa-pencil"></i> Edit event</a>
+
+    <form method="post" action="/events/{{id}}?_method=DELETE" id="delete-form" >
+      <input type="hidden" name="_method" value="DELETE">
+      <button type="submit" class="btn btn-danger btn-block" value="Delete">
+        <i class="fa fa-trash"></i> Delete
+      </button>
+    </form>
+
   </div>
 {{else}}
   <p>No events found</p>

@@ -1,10 +1,12 @@
 const express = require('express');
-const exphbs = require('express-handlebars');   //front-end
-const bodyParser = require('body-parser');      //to access at req.value
-const flash = require('connect-flash');         //notification messages
-const session = require('express-session');     //needs for flash
-const mongoose = require('mongoose');           //database
-const passport = require('passport');           //for authentication
+const path = require('path');
+const exphbs = require('express-handlebars');       //front-end
+const bodyParser = require('body-parser');          //to access at req.value
+const methodOverride = require('method-override');  //needs for edit and delete
+const flash = require('connect-flash');             //notification messages
+const session = require('express-session');         //needs for flash
+const mongoose = require('mongoose');               //database
+const passport = require('passport');               //for authentication
 
 const app = express();
 
@@ -51,6 +53,9 @@ app.set('view engine', 'handlebars');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//method override middleware
+app.use(methodOverride('_method'));
+
 //espress session middleware
 app.use(session({
   secret: 'ivagnescoretti',
@@ -73,6 +78,9 @@ app.use(function(req, res, next){
   res.locals.user = req.user || null;
   next();
 });
+
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 //use routes
 app.use('/', index)

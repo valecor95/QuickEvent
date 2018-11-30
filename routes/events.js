@@ -5,7 +5,7 @@ const Event = mongoose.model('events');
 const User = mongoose.model('users');
 const {ensureAuthenticated} = require('../helpers/auth');
 
-//My events route
+// My events route
 router.get('/myEvents', ensureAuthenticated, (req,res) => {
   Event.find({creator: req.user.id})
     .sort({dateCreation:'desc'})
@@ -16,7 +16,7 @@ router.get('/myEvents', ensureAuthenticated, (req,res) => {
     });
 })
 
-//Create event route
+// Create event route
 router.get('/createEvent', ensureAuthenticated, (req,res) => {
   res.render('events/createEvent');
 })
@@ -33,6 +33,18 @@ router.get('/show/:id', (req, res) => {
     });
   });
 });
+
+// Edit Event form
+router.get('/editEvent/:id', ensureAuthenticated, (req,res) => {
+  Event.findOne({
+    _id: req.params.id
+  })
+  .then(event => {
+    res.render('events/editEvent', {
+      event:event
+    });
+  });
+})
 
 
 // Process Add Event
@@ -64,6 +76,7 @@ router.post('/createEvent', (req, res) => {
     });
   } else{
 
+    //create the new event object
     const newEvent = {
       name: req.body.name,
       date: req.body.date,
@@ -82,4 +95,65 @@ router.post('/createEvent', (req, res) => {
 
 });
 
+//edit form Process
+router.put('/:id', (req, res) => {
+  Event.findOne({
+    _id: req.params.id
+  })
+  .then(event => {
+    let errors = [];;
+
+    //server side validation
+    if(!req.body.name){
+      errors.push({text:'Please add the name'});
+    }
+    if(!req.body.date){
+      errors.push({text:'Please add the date'});
+    }
+    if(!req.body.time){
+      errors.push({text:'Please add the time'});
+    }
+    if(!req.body.location){
+      errors.push({text:'Please add the location'});
+    }
+
+    if(errors.length > 0){
+      res.render('events/createEvent', {
+        errors: errors,
+        name: req.body.name,
+        date: req.body.date,
+        //time                  ////////
+        location: req.body.location,
+        details: req.body.details,
+      });
+    } else {
+
+      //update values
+      event.name = req.body.name,
+      event.date = req.body.date,
+      //time
+      event.location = req.body.location,
+      event.details = req.body.details,
+      event.creator = req.user.id
+
+      event.save()
+      .then(event => {
+        req.flash('success_msg', 'Event updated');
+        res.redirect('/events/myEvents');
+      })
+    }
+  });
+});
+
+
+//delete event
+router.delete('/:id', (req, res) => {
+  Event.remove({
+    _id: req.params.id
+  })
+   .then(() => {
+      req.flash('success_msg', 'Event removed');
+      res.redirect('/events/myEvents');
+    });
+});
 module.exports = router;

@@ -1,6 +1,6 @@
 <div class="card card-body">
   <h3>Create a new event</h3>
-  <form action="createEvent" method="post">   <!--to complete -->
+  <form action="createEvent" method="post">
     <div class="form-group">
       <label for="name">Name</label>
       <input type="text" class="form-control" name="name" value="{{name}}" >
@@ -35,10 +35,9 @@
 
     <div class="form-group">
       <label for="details">Details</label>
-      <textarea class="form-control" name="details" ></textarea>
+      <textarea class="form-control" name="details">{{details}}</textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
-    <button type="reset" class="btn btn-danger">reset</button>
   </form>
 </div>

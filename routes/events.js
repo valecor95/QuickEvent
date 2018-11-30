@@ -70,7 +70,7 @@ router.post('/createEvent', (req, res) => {
       errors: errors,
       name: req.body.name,
       date: req.body.date,
-      //time                  ////////
+      time: req.body.time,
       location: req.body.location,
       details: req.body.details,
     });
@@ -79,12 +79,14 @@ router.post('/createEvent', (req, res) => {
     //create the new event object
     const newEvent = {
       name: req.body.name,
-      date: req.body.date,
-      //time
+      date: req.body.date + ' ' + req.body.time,
       location: req.body.location,
       details: req.body.details,
       creator: req.user.id
     }
+
+    console.log(newEvent.date);
+
     new Event(newEvent)
       .save()
       .then(event => {
@@ -122,7 +124,7 @@ router.put('/:id', (req, res) => {
         errors: errors,
         name: req.body.name,
         date: req.body.date,
-        //time                  ////////
+        time: req.body.time,
         location: req.body.location,
         details: req.body.details,
       });
@@ -130,8 +132,7 @@ router.put('/:id', (req, res) => {
 
       //update values
       event.name = req.body.name,
-      event.date = req.body.date,
-      //time
+      event.date = req.body.date + ' ' + req.body.time,
       event.location = req.body.location,
       event.details = req.body.details,
       event.creator = req.user.id

@@ -23,10 +23,10 @@
         </tr>
         <tr>
           <td>
-            <input type="date" class="form-control" name="date" value="{{event.date}}" >
+            <input type="date" class="form-control" name="date" value="{{formatDate event.date 'YYYY-MM-DD'}}" >
           </td>
           <td>
-            <input type="time" class="form-control" name="time" value="{{event.time}}" >
+            <input type="time" class="form-control" name="time" value="{{formatDate vent.time 'HH:mm'}}" >
           </td>
           <td>
             <input type="text" class="form-control" name="location" value="{{event.location}}" >

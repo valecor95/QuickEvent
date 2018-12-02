@@ -3,9 +3,54 @@
   <p><b>Date:</b> {{formatDate event.date 'MMMM Do YYYY'}}</p>
   <p><b>Time:</b> {{formatDate event.date 'HH:mm'}}</p>
   <p><b>location:</b>  {{event.location}}</p>
-  <p><b>Event created by:</b>  {{event.creator.firstName}} {{event.creator.lastName}}</p>
+  <p><b>Event created by:</b>  <a href="/events/user/{{event.creator.id}}">
+    {{event.creator.firstName}} {{event.creator.lastName}}</a></p>
   <p><b>Email:</b> {{event.creator.email}}</p>
   <p><b>details:</b> {{stripTags event.details}}</p>
   <hr/>
-  join
+
+  <!-- to make visible join button only if user is logged-->
+  {{#if user}}
+    <form action="/events/join/{{event.id}}?_method=PUT" method="post">
+      <input type="hidden" name="_method" value="PUT">
+      <button type="submit" class="btn btn-primary btn-block" value="Join">
+        Join event
+      </button>
+    </form>
+  {{else}}
+    <p>Please <a href="/auth/login">log-in</a> to join the event</p>
+  {{/if}}
+</div>
+
+
+<!-- comments section -->
+<div class="card card-body mb-2">
+  <div class="card-title"><b>Comments</b></div>
+
+  {{#each event.comments}}
+    <div class="card mb-2">
+        <div class="card-header">Posted by <a href="/events/user/{{commentUser.id}}">
+          <i>{{commentUser.firstName}}</i> <i>{{commentUser.lastName}}</i> </a> </div>
+        <div class="card-body">
+            {{commentBody}}
+            <footer class="blockquote-footer">{{formatDate commentDate 'MMMM Do YYYY'}} at {{formatDate commentDate 'HH:mm'}}</footer>
+        </div>
+    </div>
+  {{else}}
+    <p>There are no comments for this event</p>
+  {{/each}}
+
+  <!-- to make visible add comment section only if user is logged-->
+  <hr/>
+  {{#if user}}
+    <form method="post" action="/events/comment/{{event.id}}">
+      <div class="form-group">
+        <textarea class="form-control" name="commentBody" placeholder="Add comment"></textarea>
+      </div>
+        <button type="submit" value="Submit" class="btn btn-primary">Submit</button>
+    </form>
+  {{else}}
+    <p>Please <a href="/auth/login">log-in</a> to leave a comment</p>
+  {{/if}}
+
 </div>

@@ -1,5 +1,6 @@
 <h4>Events joined</h4>
 <hr>
+<!-- to show events joined -->
 {{#each eventsjoined}}
   <div class="card card-body mb-2">
     <h4 align="center">{{name}}</h4>
@@ -7,15 +8,21 @@
     <p><b>Time:</b> {{formatDate date 'HH:mm'}}</p>
     <p><b>location:</b>  {{location}}</p>
     <hr/>
-    <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more for details</a>
-    disjoin
+    <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more details</a>
+
+    <form action="/events/delete/{{id}}?_method=PUT" method="post">
+      <input type="hidden" name="_method" value="PUT">
+      <button type="submit" class="btn btn-danger btn-block" value="PUT">
+        Leave event
+      </button>
+    </form>
   </div>
 {{else}}
   <p>No events found</p>
 {{/each}}
 
 
-
+<!-- to show events created -->
 <br/><br/>
 <h4>Events created</h4>
 <hr>
@@ -26,7 +33,7 @@
     <p><b>Time:</b> {{formatDate date 'HH:mm'}}</p>
     <p><b>location:</b>  {{location}}</p>
     <hr/>
-    <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more for details</a>
+    <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more details</a>
     <a href="/events/editEvent/{{id}}" class="btn btn-primary btn-block mb-2">
       <i class="fa fa-pencil"></i> Edit event</a>
 

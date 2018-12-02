@@ -1,0 +1,15 @@
+<div class="card card-body mb-2">
+  <div class="card-title"><b>Events created by the user</b></div>
+    {{#each events}}
+      <div class="card card-body mb-2">
+        <h4 align="center">{{name}}</h4>
+        <p><b>Date:</b> {{formatDate date 'MMMM Do YYYY'}}</p>
+        <p><b>Time:</b> {{formatDate date 'HH:mm'}}</p>
+        <p><b>location:</b>  {{location}}</p>
+        <hr/>
+        <a href="/events/show/{{id}}" class="btn btn-dark btn-block mb-2">Read more details</a>
+      </div>
+    {{else}}
+      <p>No events found</p>
+    {{/each}}
+</div>

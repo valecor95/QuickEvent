@@ -5,6 +5,7 @@ const Event = mongoose.model('events');
 const User = mongoose.model('users');
 const {ensureAuthenticated} = require('../helpers/auth');
 
+
 // My events route
 router.get('/myEvents', ensureAuthenticated, (req,res) => {
   //find events created
@@ -196,28 +197,32 @@ router.post('/comment/:id', (req, res) => {
 
 //join event Process
 router.put('/join/:id', (req, res) => {
-  //to add user in event (joiners) list
   Event.findOne({
     _id: req.params.id
     })
     .then(event => {
-      event.joiners.push(req.user.id);
-
-      //to add also in the user (events) list
+      //check if already joined
       User.findOne({
         _id: req.user.id
       })
       .then(user => {
-        user.events.unshift(event);
-        user.save()
-      });
-
-      event.save()
-        .then(event => {
-          req.flash('success_msg', 'Event joined');
+        if (user.events.indexOf(event._id) != -1){
+          req.flash('error_msg', 'Already joined');
           res.redirect('/events/myEvents');
-        });
+        } else {
 
+          //to add in both user (events) list and event (joiners) list
+          event.joiners.push(req.user.id);
+          user.events.unshift(event);
+          user.save()
+
+          event.save()
+            .then(event => {
+              req.flash('success_msg', 'Event joined');
+              res.redirect('/events/myEvents');
+            });
+        }
+      });
     });
 });
 
@@ -229,7 +234,6 @@ router.put('/delete/:id', (req, res) => {
     _id: req.params.id
     })
     .then(event => {
-      console.log('aaa');
       event.joiners.pull(req.user.id);
 
       //to delete also in the user (events) list
@@ -253,6 +257,10 @@ router.put('/delete/:id', (req, res) => {
 
 //delete event
 router.delete('/:id', (req, res) => {
+  User.update({}, {
+    $pull: {events:req.params.id}
+  });
+
   Event.deleteOne({
     _id: req.params.id
     })

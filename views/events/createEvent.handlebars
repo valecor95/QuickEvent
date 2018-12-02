@@ -1,9 +1,9 @@
 <div class="card card-body">
   <h3>Create a new event</h3>
-  <form action="#" method="post">   <!--to complete -->
+  <form action="createEvent" method="post">
     <div class="form-group">
       <label for="name">Name</label>
-      <input type="text" class="form-control" name="name" value="{{name}}" required >
+      <input type="text" class="form-control" name="name" value="{{name}}" >
     </div>
 
     <div class="form-group">
@@ -21,13 +21,13 @@
         </tr>
         <tr>
           <td>
-            <input type="date" class="form-control" name="date" value="{{date}}" required >
+            <input type="date" class="form-control" name="date" value="{{date}}" >
           </td>
           <td>
-            <input type="time" class="form-control" name="time" value="{{time}}" required >
+            <input type="time" class="form-control" name="time" value="{{time}}" >
           </td>
           <td>
-            <input type="text" class="form-control" name="location" value="{{location}}" required >
+            <input type="text" class="form-control" name="location" value="{{location}}" >
           </td>
         </tr>
       </table>
@@ -35,10 +35,9 @@
 
     <div class="form-group">
       <label for="details">Details</label>
-      <textarea class="form-control" name="details" ></textarea>
+      <textarea class="form-control" name="details">{{details}}</textarea>
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
-    <button type="reset" class="btn btn-danger">reset</button>
   </form>
 </div>

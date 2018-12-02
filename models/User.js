@@ -10,7 +10,8 @@ const UserSchema = new Schema({
   firstName:              { type: String, required: true },
   lastName:               { type: String, required: true },
   password:               { type: String, required: false },
-  date:                   { type: Date, default: Date.now }
+  date:                   { type: Date, default: Date.now },
+  events:                 [{ type: Schema.Types.ObjectId, ref:'events'}]
 });
 
 mongoose.model('users', UserSchema);

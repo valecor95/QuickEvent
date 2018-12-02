@@ -1,15 +1,18 @@
 const express = require('express');
-const exphbs = require('express-handlebars');   //front-end
-const bodyParser = require('body-parser');      //to access at req.value
-const flash = require('connect-flash');         //notification messages
-const session = require('express-session');     //needs for flash
-const mongoose = require('mongoose');           //database
-const passport = require('passport');           //for authentication
+const path = require('path');
+const exphbs = require('express-handlebars');       //front-end
+const bodyParser = require('body-parser');          //to access at req.value
+const methodOverride = require('method-override');  //needs for edit and delete
+const flash = require('connect-flash');             //notification messages
+const session = require('express-session');         //needs for flash
+const mongoose = require('mongoose');               //database
+const passport = require('passport');               //for authentication
 
 const app = express();
 
 //load user model
 require('./models/User');
+require('./models/Event');
 
 //Passport config
 require('./config/passport')(passport);
@@ -22,6 +25,12 @@ const auth = require('./routes/auth');
 //load key
 const keys = require('./config/keys.js');
 
+//handlebars helpers
+const {
+  stripTags,
+  formatDate
+} = require('./helpers/hbs');
+
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
 //connect to mongoose
@@ -32,12 +41,20 @@ mongoose.connect(keys.mongoURI, {
   .catch(err => console.log(err));
 
 //handlebars middleware
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({
+  helpers: {
+    stripTags: stripTags,
+    formatDate: formatDate
+  },
+  defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
 //body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+//method override middleware
+app.use(methodOverride('_method'));
 
 //espress session middleware
 app.use(session({
@@ -61,6 +78,9 @@ app.use(function(req, res, next){
   res.locals.user = req.user || null;
   next();
 });
+
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 //use routes
 app.use('/', index)

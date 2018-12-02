@@ -1,1 +1,45 @@
-to do
+<div class="card card-body">
+  <h3>Edit event</h3>
+  <form action="/events/{{event.id}}?_method=PUT" method="post">
+    <input type="hidden" name="_method" value="PUT">
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" name="name" value="{{event.name}}" >
+    </div>
+
+    <div class="form-group">
+      <table>
+        <tr>
+          <td>
+            <label for="date">Date</label>
+          </td>
+          <td>
+            <label for="time">Time</label>
+          </td>
+          <td>
+            <label for="name">Location</label>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <input type="date" class="form-control" name="date" value="{{formatDate event.date 'YYYY-MM-DD'}}" >
+          </td>
+          <td>
+            <input type="time" class="form-control" name="time" value="{{formatDate vent.time 'HH:mm'}}" >
+          </td>
+          <td>
+            <input type="text" class="form-control" name="location" value="{{event.location}}" >
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="form-group">
+      <label for="details">Details</label>
+      <textarea class="form-control" name="details">{{event.details}}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const router = express.Router();
+const {ensureAuthenticated} = require('../helpers/auth');
 
 //load user module
 require('../models/User');
@@ -16,6 +17,11 @@ router.get('/login', (req,res) =>{
 //sign-up routes
 router.get('/register', (req,res) =>{
   res.render('auth/register');
+});
+
+//user page routes
+router.get('/userPage', ensureAuthenticated, (req,res) =>{
+  res.render('auth/userPage');
 });
 
 

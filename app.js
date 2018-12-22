@@ -9,10 +9,32 @@ const mongoose = require('mongoose');               //database
 const passport = require('passport');               //for authentication
 
 const app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
+
+/************ WebSocket connection for handle chat message ***********/
+io.on('connection', function(socket){
+  console.log("Socket.io Connected...");
+  
+  // Handle message event
+  socket.on('chat', function(msg){
+    io.emit('chat', msg);
+    console.log("Message emitted");
+  });
+
+  // Handle typing event
+  socket.on('typing', function(data){
+    socket.broadcast.emit('typing', data);
+  });
+
+});
+/*********************************************************************/
+
 
 //load user model
-require('./models/User');
 require('./models/Event');
+require('./models/User');
 
 //Passport config
 require('./config/passport')(passport);
@@ -21,6 +43,7 @@ require('./config/passport')(passport);
 const index = require('./routes/index');
 const events = require('./routes/events');
 const auth = require('./routes/auth');
+const insights = require('./routes/insights');
 
 //load key
 const keys = require('./config/keys.js');
@@ -86,8 +109,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index)
 app.use('/events', events);
 app.use('/auth', auth);
+app.use('/insights', insights);
 
 const port = process.env.port || 5000;
-app.listen(port, ()=>{
+http.listen(port, ()=>{
   console.log(`Server started on port ${port}`);
 } );

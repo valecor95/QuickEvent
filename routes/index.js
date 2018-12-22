@@ -3,7 +3,6 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Event = mongoose.model('events');
 
-
 //index route
 router.get('/', (req,res) => {
   Event.find({})                        //show every event in the database

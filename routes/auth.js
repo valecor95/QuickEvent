@@ -5,6 +5,7 @@ const passport = require('passport');
 const router = express.Router();
 const {ensureAuthenticated} = require('../helpers/auth');
 
+
 //load user module
 require('../models/User');
 const User = mongoose.model('users');

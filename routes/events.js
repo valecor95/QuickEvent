@@ -4,6 +4,7 @@ const router = express.Router();
 const Event = mongoose.model('events');
 const User = mongoose.model('users');
 const {ensureAuthenticated} = require('../helpers/auth');
+const amqp = require('amqplib/callback_api');
 
 
 // My events route
@@ -119,6 +120,16 @@ router.post('/createEvent', (req, res) => {
         req.flash('success_msg', 'Event added');
         res.redirect('/events/myEvents');
       })
+    // Send a notify to all users
+    amqp.connect('amqp://localhost', function(err, conn) {
+      conn.createChannel(function(err, ch) {
+        var ex = 'notify';
+        
+        var msg = req.body.name + " has been created";
+        ch.assertExchange(ex, 'fanout', {durable: false});
+        ch.publish(ex, '', new Buffer.from(msg));
+      });
+    });
   }
 
 });
@@ -168,6 +179,16 @@ router.put('/:id', (req, res) => {
           req.flash('success_msg', 'Event updated');
           res.redirect('/events/myEvents');
         })
+        // Send a notify to all users
+        amqp.connect('amqp://localhost', function(err, conn) {
+          conn.createChannel(function(err, ch) {
+            var ex = 'notify';
+            
+            var msg = req.body.name + " has been edited";
+            ch.assertExchange(ex, 'fanout', {durable: false});
+            ch.publish(ex, '', new Buffer.from(msg));
+          });
+        });
       }
     });
 });
@@ -216,6 +237,17 @@ router.put('/join/:id', (req, res) => {
           user.events.unshift(event);
           user.save()
 
+          // Send a notify to creator users
+          amqp.connect('amqp://localhost', function(err, conn) {
+            conn.createChannel(function(err, ch) {
+              var ex = 'notify';
+              
+              var msg = user.name + " has joined the event " + event.name;
+              ch.assertExchange(ex, 'fanout', {durable: false});
+              ch.publish(ex, '', new Buffer.from(msg));
+            });
+          });
+
           event.save()
             .then(event => {
               req.flash('success_msg', 'Event joined');
@@ -229,6 +261,7 @@ router.put('/join/:id', (req, res) => {
 
 //leave event Process
 router.put('/delete/:id', (req, res) => {
+  var username = "";
   //to delete user in event (joiners) list
   Event.findOne({
     _id: req.params.id
@@ -250,13 +283,23 @@ router.put('/delete/:id', (req, res) => {
           req.flash('error_msg', 'Event left');
           res.redirect('/events/myEvents');
         });
-
+      // Send a notify to creator user
+      amqp.connect('amqp://localhost', function(err, conn) {
+        conn.createChannel(function(err, ch) {
+          var ex = 'notify';
+          
+          var msg = username + " has left the event " + event.name;
+          ch.assertExchange(ex, 'fanout', {durable: false});
+          ch.publish(ex, '', new Buffer.from(msg));
+        });
+      });
     });
 });
 
 
 //delete event
 router.delete('/:id', (req, res) => {
+  var event_name = "";
   User.update({}, {
     $pull: {events:req.params.id}
   });
@@ -266,6 +309,18 @@ router.delete('/:id', (req, res) => {
     })
     .then(() => {
       req.flash('error_msg', 'Event removed');
+
+      // Send a notify to all users
+      amqp.connect('amqp://localhost', function(err, conn) {
+        conn.createChannel(function(err, ch) {
+          var ex = 'notify';
+          
+          var msg = "The event "+ event_name + " has been canceled";
+          ch.assertExchange(ex, 'fanout', {durable: false});
+          ch.publish(ex, '', new Buffer.from(msg));
+        });
+      });
+
       res.redirect('/events/myEvents');
     });
 });

@@ -58,7 +58,7 @@ input{
     font-size: 16px;
 }
 
-button{
+#send{
     background: #007bff;
     color: #fff;
     font-size: 18px;
@@ -72,3 +72,11 @@ button{
 #handle{
     display: none;
 }
+
+#email{
+    display: none;
+}
+
+/*#notifies{
+    display: none;
+}*/

@@ -21,6 +21,7 @@
     {{> _navbar}}   <!-- to show the navbar in every single page -->
 
     <div class="container">
+      {{> _notify}} <!-- to show real-time notifies -->
       {{> _msg}}    <!-- to show notification messages -->
       {{> _errors}}
       {{{body}}}    <!-- to show in the page everything sent with render(); -->
@@ -43,5 +44,50 @@
       });
     </script>
 
+      <!-- jquery and socket.io (to handle chat and notifies) -->
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      /********** Handle Notifies message throw WebSocket and Socket.io *********/
+      $(function () {
+        var socket = window.io.connect('http://localhost:5000/', {transports:['websocket']});
+
+        socket.on($('#email').val()+"ack", function(data){
+            $('#start').css('display', 'block');
+            $('#notifies').css('display', 'none');
+        });
+
+        socket.on($('#email').val(), function(data){
+          $('#notifies').prepend('<div class="alert alert-info"><i class="fa fa-comments"></i><strong> ' + data + '</strong></div>');
+          setTimeout(function() { $('#notifies').html(''); }, 10000);
+        });
+
+        $('#ws-form').submit(function(){
+          socket.emit('chat', {
+            message: $('#message').val(),
+            handle: $('#handle').val()
+          });
+          console.log("Message emitted");
+          $('#message').val('');
+          return false;
+        });
+
+        $('#message').keypress(function(){
+          socket.emit('typing', $('#handle').val());
+        });
+
+        
+        socket.on('chat', function(data){
+          $('#type').html('');
+          $('#output').append('<p><strong>' + data.handle + ': </strong>' + data.message + '</p>');
+          console.log("Message printed");
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+        
+        socket.on('typing', function(data){
+          $('#type').html('<p><em>' + data + ' is typing a message...</em></p>');
+        });
+      });
+    </script>
   </body>
 </html>

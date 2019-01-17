@@ -7,30 +7,11 @@ const flash = require('connect-flash');             //notification messages
 const session = require('express-session');         //needs for flash
 const mongoose = require('mongoose');               //database
 const passport = require('passport');               //for authentication
+const amqp = require('amqplib/callback_api');
 
 const app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-
-
-/************ WebSocket connection for handle chat message ***********/
-io.on('connection', function(socket){
-  console.log("Socket.io Connected...");
-  
-  // Handle message event
-  socket.on('chat', function(msg){
-    io.emit('chat', msg);
-    console.log("Message emitted");
-  });
-
-  // Handle typing event
-  socket.on('typing', function(data){
-    socket.broadcast.emit('typing', data);
-  });
-
-});
-/*********************************************************************/
-
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 //load user model
 require('./models/Event');
@@ -43,7 +24,7 @@ require('./config/passport')(passport);
 const index = require('./routes/index');
 const events = require('./routes/events');
 const auth = require('./routes/auth');
-const insights = require('./routes/insights');
+const chat = require('./routes/chat');
 
 //load key
 const keys = require('./config/keys.js');
@@ -53,6 +34,82 @@ const {
   stripTags,
   formatDate
 } = require('./helpers/hbs');
+
+
+/********************************************************************************************************/
+/*                     WebSocket and AMQP connection to handle CHAT and NOTIFIES                        */
+/********************************************************************************************************/
+io.on('connection', function(socket){
+  //console.log("Socket.io Connected...");
+  // Handle notify event
+  socket.on('notify', function(data){
+      if(data != ''){
+        amqp.connect(keys.amqpURI, function(err, conn) {
+          conn.createChannel(function(err, ch) {
+          var ex = 'notify';
+              ch.assertExchange(ex, 'topic', {durable: false});
+
+              ch.assertQueue(data, {exclusive: false}, function(err, q) {
+                  console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
+                  io.emit(data+"ack");  //Ack to sure the connection
+                  ch.bindQueue(q.queue, ex, data);
+                  ch.bindQueue(q.queue, ex, "all");
+                  ch.consume(q.queue, function(msg) {
+                    io.emit(data, msg.content.toString());
+                    console.log(" [x] %s", msg.content.toString());    
+                  }, {noAck: false});
+              });   
+          });
+        });
+      }
+  });
+  
+
+  // Handle message event
+  socket.on('chatstart', function(data){
+    if(data != ''){
+      amqp.connect(keys.amqpURI, function(err, conn) {
+        conn.createChannel(function(err, ch) {
+        var ex = 'chat';
+            ch.assertExchange(ex, 'topic', {durable: false});
+
+            ch.assertQueue("chat"+data, {exclusive: false}, function(err, q) {
+                console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
+                ch.bindQueue(q.queue, ex, 'chat');
+                ch.consume(q.queue, function(msg) {
+                  console.log(typeof msg.content);
+                  io.emit("chat"+data, msg.content.toString());
+                  console.log(" [x] %s", msg.content.toString());
+                }, {noAck: false});
+            });
+        });
+      });
+    }
+  });
+  
+  // Handle message event
+  socket.on('chat', function(msg){
+    io.emit('chat', msg);
+    // Send chat message to the main queue
+    amqp.connect(keys.amqpURI, function(err, conn) {
+      conn.createChannel(function(err, ch) {
+        var ex = 'chat';
+        var key = 'chat';
+        ch.assertExchange(ex, 'topic', {durable: false});
+        ch.publish(ex, key, new Buffer.from('<p><strong>' + msg.handle + ': </strong>' + msg.message + '</p>'));
+      });
+      setTimeout(function() { conn.close();}, 500);
+    });
+  });
+
+  // Handle typing event
+  socket.on('typing', function(data){
+    socket.broadcast.emit('typing', data);
+  });
+
+});
+/*********************************************************************************************************
+**********************************************************************************************************/
 
 // Map global promise - get rid of warning
 mongoose.Promise = global.Promise;
@@ -109,7 +166,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index)
 app.use('/events', events);
 app.use('/auth', auth);
-app.use('/insights', insights);
+app.use('/chat', chat);
 
 const port = process.env.port || 5000;
 http.listen(port, ()=>{

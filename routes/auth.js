@@ -29,7 +29,7 @@ router.get('/userPage', ensureAuthenticated, (req,res) =>{
 //login Form
 router.post('/login', (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/',
+    successRedirect: '/welcome',
     failureRedirect: '/auth/login',
     failureFlash: true
   })(req,res, next);
@@ -100,7 +100,7 @@ router.get('/facebook',
 //return from authenticate
 router.get('/facebook/callback',
 	passport.authenticate('facebook', {
-	    successRedirect : '/',
+	    successRedirect : '/welcome',
 	    failureRedirect : '/auth/login'
 	})
 );
@@ -113,7 +113,7 @@ router.get('/google', passport.authenticate('google', {scope: ['profile', 'email
 //return from authenticate
 router.get('/google/callback',
   passport.authenticate('google', {
-    successRedirect : '/',
+    successRedirect : '/welcome',
     failureRedirect: '/auth/login'
     })
   );

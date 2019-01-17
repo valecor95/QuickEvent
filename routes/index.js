@@ -14,6 +14,10 @@ router.get('/', (req,res) => {
     });
 })
 
+router.get('/welcome', (req,res) => {
+  res.render('index/welcome');
+})
+
 //about route
 router.get('/about', (req,res) => {
   res.render('index/about');

@@ -66,13 +66,8 @@ module.exports = function(passport){
                         // set all of the facebook information in our user model
                         newUser.facebook_access_token = access_token; // we will save the token that facebook provides to the user
                         newUser.firstName  = profile.name.givenName;
-                        newUser.google_ac_token="";
                         newUser.lastName = profile.name.familyName; // look at the passport user profile to see how names are returned
                         newUser.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
-                        //newUser.feedback=0;
-                        //newUser.num_recensioni=0;
-                        //newUser.somma_valutazione=0;
-                        //newUser.eventi=[];
                         newUser.online=true;
 
                         // save our user to the database

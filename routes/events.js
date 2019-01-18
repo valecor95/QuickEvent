@@ -52,7 +52,7 @@ router.get('/show/:id', (req, res) => {
     });
 });
 
-// List stories from a user
+// List events from a user
 router.get('/user/:userId', (req, res) => {
   Event.find({
     creator: req.params.userId

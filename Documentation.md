@@ -1,5 +1,6 @@
 ## Defined REST APIs:
 All Rest APIs are in "routes" folder, divided into four js files.
+look at helpers/auth for ensureAuthenticated function
 
 ### index.js
   * #### '/'
@@ -10,6 +11,7 @@ All Rest APIs are in "routes" folder, divided into four js files.
 
   * #### '/about'
     ***GET*** : standard about page
+
 
 ### auth.js
   * #### '/login'
@@ -39,6 +41,7 @@ All Rest APIs are in "routes" folder, divided into four js files.
 
   * #### '/logout'
     ***GET***: to log out a user from the app and redirect on /login
+
 
 ### events.js
   * #### '/myevents'
@@ -71,6 +74,54 @@ All Rest APIs are in "routes" folder, divided into four js files.
 
   * #### '/delete/:id'
     ***PUT*** : used in my events page to leave an event joined. Then notify the user who joined the even by AMQP
+
+
+
+## Config folder
+
+### keys.js
+file used to contain services URI, ID and oauth secrets
+
+
+### passport.js
+used to contain passport oauth middlewares, the email is used as key id
+  * #### 'local'
+    used for local authentication. It also executes the password's encryption via bcrypt
+
+  * #### 'facebook'
+    provides access by facebook
+
+  * #### 'facebook'
+    provides access by google
+
+
+
+## Helpers folder
+
+### auth.js
+  * #### ensureAuthenticated
+    provides access to the route only if the user is logged in, otherwise flash an error message and redirect to login page
+
+
+### hbs.js
+  * #### stripTags
+    to remove html syntax from output text
+
+  * #### formatDate
+    to format dates on output text
+
+
+## Views folder
+  - the view engine is based on handlebars and decorated with bootstrap and awesome icons
+  - views are divided in the same way as routes. Plus there is layouts for main page, that provides connection to bootstrap, awesome icons and handle notifies and chat throw WebSocket and Socket.io.
+  Partials provides the navbar and messages/errors sections
+
+
+
+## Other folders 
+  * models folder contains database schemas for users and events
+  * public folder contains css files and images
+
 
 
 ## Structure

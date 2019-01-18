@@ -118,7 +118,6 @@ router.post('/createEvent', (req, res) => {
     new Event(newEvent)
       .save()
       .then(event => {
-        req.flash('success_msg', 'Event added');
         res.redirect('/events/myEvents');
       })
     // Send a notify to all users
@@ -247,7 +246,7 @@ router.put('/join/:id', (req, res) => {
           user.events.unshift(event);
           user.save();
 
-          //to send a notify to event's creator 
+          //to send a notify to event's creator
           User.findOne({
             _id: event.creator._id
           })
@@ -294,7 +293,7 @@ router.put('/delete/:id', (req, res) => {
           user.save();
         });
 
-      //to send a notify to event's creator 
+      //to send a notify to event's creator
       User.findOne({
           _id: event.creator._id
         })

@@ -3,77 +3,57 @@ All Rest APIs are in "routes" folder, divided into four js files.
 look at helpers/auth for ensureAuthenticated function
 
 ### index.js
-  * #### '/'
-    ***GET*** : home page, it shows all events in the DB created from all users
+  * ***GET '/'*** : home page, it shows all events in the DB created from all users
 
-  * #### '/welcome'
-    ***GET*** : showed after login
+  * ***GET '/welcome'*** : showed after login
 
-  * #### '/about'
-    ***GET*** : standard about page
+  * ***GET '/about'*** : standard about page
 
 
 ### auth.js
-  * #### '/login'
-    ***GET*** : to show login methods (local and oauth)
+  * ***GET '/login'*** : to show login methods (local and oauth)
 
-    ***POST*** : used only for local authentication, takes username and password from login form and authenticates users (manage by passport, see also passport.js)
+  * ***POST '/login'*** : used only for local authentication, takes username and password from login form and authenticates users (manage by passport, see also passport.js)
 
-  * #### '/register'
-    ***GET*** : to show signup methods (local and oauth)
+  * ***GET '/register'*** : to show signup methods (local and oauth)
 
-    ***POST*** : used only for local authentication, takes details from register form and create a new User on DB. it checks errors and shows them. It also executes the password's encryption via bcrypt
+  * ***POST '/register'*** : used only for local authentication, takes details from register form and create a new User on DB. it checks errors and shows them. It also executes the password's encryption via bcrypt
 
-  * #### '/userPage'
-    ***GET***: to show user page
+  * ***GET '/userPage'*** : to show user page
 
-  * #### '/facebook'
-    ***GET***: to start facebook oauth via passport (see also passport.js)
+  * ***GET '/facebook'*** : to start facebook oauth via passport (see also passport.js)
 
-  * #### '/facebook/callback'
-    ***GET***:  if facebook auth fails it redirects on /login, else on /welcome
+  * ***GET '/facebook/callback'*** :  if facebook auth fails it redirects on /login, else on /welcome
 
-  * #### '/google'
-    ***GET***: to start google oauth via passport (see also passport.js)
+  * ***GET '/google'*** : to start google oauth via passport (see also passport.js)
 
-  * #### '/google/callback'
-    ***GET***: if google auth fails it redirects on /login, else on /welcome
+  * ***GET '/google/callback'*** : if google auth fails it redirects on /login, else on /welcome
 
-  * #### '/logout'
-    ***GET***: to log out a user from the app and redirect on /login
+  * ***GET '/logout'***: to log out a user from the app and redirect on /login
 
 
 ### events.js
-  * #### '/myevents'
-    ***GET*** : to show user events. for first, events created by the user. Then, events joined by the user
+  * ***GET '/myevents'*** : to show user events. for first, events created by the user. Then, events joined by the user
 
-  * #### '/createEvents'
-    ***GET*** : to show the 'create new event' form
+  * ***GET '/createEvents'*** : to show the 'create new event' form
 
-    ***POST*** : takes details from 'create new event' form, checks for errors and add the event in the DB. Then notify all users by AMQP
+  * ***POST '/createEvents'*** : takes details from 'create new event' form, checks for errors and add the event in the DB. Then notify all users by AMQP
 
-  * #### '/show/:id'
-    ***GET*** : to show informations about the event selected by the :id. also provides join function and comments section
+  * ***GET '/show/:id'*** : to show informations about the event selected by the :id. also provides join function and comments section
 
-  * #### /user/:userId'
-    ***GET*** : to show all events created by the user, selected by the :UserId
+  * ***GET /user/:userId'*** : to show all events created by the user, selected by the :UserId
 
-  * #### '/editEvent'
-    ***GET*** : to show the 'edit event' form
+  * ***GET '/editEvent'*** : to show the 'edit event' form
 
-  * #### ':id'
-    ***PUT*** : to edit events. Takes details from 'create new event' form, checks for errors and add the event in DB. Then notify all users who joined the event by AMQP
+  * ***PUT ':id'*** : to edit events. Takes details from 'create new event' form, checks for errors and add the event in DB. Then notify all users who joined the event by AMQP
 
-    ***DELETE*** : to delete the event in the DB and remove it from users event joined list
+  * ***DELETE ':id'*** : to delete the event in the DB and remove it from users event joined list
 
-  * #### '/comment/:id'
-    ***POST*** : used in the show event page to add a new comment on the event and store it in the DB
+  * ***POST '/comment/:id'*** : used in the show event page to add a new comment on the event and store it in the DB
 
-  * #### '/join/:id'
-    ***PUT*** : used in the show event page to join an event, if not already joined, and store it in the DB. Then notify all users who joined the even by AMQP
+  * ***PUT '/join/:id'*** : used in the show event page to join an event, if not already joined, and store it in the DB. Then notify all users who joined the even by AMQP
 
-  * #### '/delete/:id'
-    ***PUT*** : used in my events page to leave an event joined. Then notify the user who joined the even by AMQP
+  * ***PUT '/delete/:id'*** : used in my events page to leave an event joined. Then notify the user who joined the even by AMQP
 
 
 
@@ -84,31 +64,29 @@ file used to contain services URI, ID and oauth secrets
 
 
 ### passport.js
-used to contain passport oauth middlewares, the email is used as key id
-  * #### 'local'
-    used for local authentication. It also executes the password's encryption via bcrypt
+used to contain passport middleware functions, the email is used as key id
+  * ***'local'*** : used for local authentication. It also executes the password's encryption via bcrypt
 
-  * #### 'facebook'
-    provides access by facebook
+  * ***'facebook'*** : provides access by facebook
 
-  * #### 'facebook'
-    provides access by google
+  * ***'facebook'*** : provides access by google
+
+  * ***'serializeUser'*** : to get information from a user object to store in a session
+
+  * ***'deserializeUser'*** : to take that information and turn it back into a user object
 
 
 
 ## Helpers folder
 
 ### auth.js
-  * #### ensureAuthenticated
-    provides access to the route only if the user is logged in, otherwise flash an error message and redirect to login page
+  * ***ensureAuthenticated*** : provides access to the route only if the user is logged in, otherwise flash an error message and redirect to login page
 
 
 ### hbs.js
-  * #### stripTags
-    to remove html syntax from output text
+  * ***stripTags*** : to remove html syntax from output text
 
-  * #### formatDate
-    to format dates on output text
+  * ***formatDate*** : to format dates on output text
 
 
 ## Views folder
@@ -118,9 +96,10 @@ used to contain passport oauth middlewares, the email is used as key id
 
 
 
-## Other folders 
+## Other folders and app.js
   * models folder contains database schemas for users and events
   * public folder contains css files and images
+  * app.js is the main file, first establish connection with mongoDB and amqp. Set the view engine, middlewares, global variables and the static folder. Then starts the server
 
 
 

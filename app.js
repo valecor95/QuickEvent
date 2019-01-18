@@ -40,7 +40,7 @@ const {
 /*                     WebSocket and AMQP connection to handle CHAT and NOTIFIES                        */
 /********************************************************************************************************/
 io.on('connection', function(socket){
-  //console.log("Socket.io Connected...");
+
   // Handle notify event
   socket.on('notify', function(data){
       if(data != ''){
@@ -57,7 +57,7 @@ io.on('connection', function(socket){
                   ch.consume(q.queue, function(msg) {
                     io.emit(data, msg.content.toString());
                     console.log(" [x] %s", msg.content.toString());    
-                  }, {noAck: false});
+                  }, {noAck: true});
               });   
           });
         });
@@ -65,7 +65,7 @@ io.on('connection', function(socket){
   });
   
 
-  // Handle message event
+  // Download all prev messages
   socket.on('chatstart', function(data){
     if(data != ''){
       amqp.connect(keys.amqpURI, function(err, conn) {
@@ -77,12 +77,12 @@ io.on('connection', function(socket){
                 console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
                 ch.bindQueue(q.queue, ex, 'chat');
                 ch.consume(q.queue, function(msg) {
-                  console.log(typeof msg.content);
                   io.emit("chat"+data, msg.content.toString());
                   console.log(" [x] %s", msg.content.toString());
                 }, {noAck: false});
             });
         });
+        setTimeout(function() { conn.close();}, 3000);
       });
     }
   });
@@ -98,7 +98,7 @@ io.on('connection', function(socket){
         ch.assertExchange(ex, 'topic', {durable: false});
         ch.publish(ex, key, new Buffer.from('<p><strong>' + msg.handle + ': </strong>' + msg.message + '</p>'));
       });
-      setTimeout(function() { conn.close();}, 500);
+      setTimeout(function() { conn.close();}, 2000);
     });
   });
 
@@ -109,6 +109,7 @@ io.on('connection', function(socket){
 
 });
 /*********************************************************************************************************
+**********************************************************************************************************
 **********************************************************************************************************/
 
 // Map global promise - get rid of warning

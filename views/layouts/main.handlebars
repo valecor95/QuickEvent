@@ -48,10 +48,11 @@
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
-      /********** Handle Notifies message throw WebSocket and Socket.io *********/
+      /********** Handle NOTIFIES and CHAT throw WebSocket and Socket.io *********/
       $(function () {
         var socket = window.io.connect('http://localhost:5000/', {transports:['websocket']});
 
+        /// Notifies Management
         socket.on($('#email').val()+"ack", function(data){
             $('#start').css('display', 'block');
             $('#notifies').css('display', 'none');
@@ -62,6 +63,8 @@
           setTimeout(function() { $('#notifies').html(''); }, 10000);
         });
 
+
+        /// Chat Management
         $('#ws-form').submit(function(){
           socket.emit('chat', {
             message: $('#message').val(),
@@ -76,7 +79,13 @@
           socket.emit('typing', $('#handle').val());
         });
 
-        
+        socket.on("chat"+$('#email').val(), function(data){
+          $('#type').html('');
+          $('#output').append(data.toString());
+          window.scrollTo(0, document.body.scrollHeight);
+          document.getElementById("chat-window").scrollTo(0, document.body.scrollHeight);
+        });
+
         socket.on('chat', function(data){
           $('#type').html('');
           $('#output').append('<p><strong>' + data.handle + ': </strong>' + data.message + '</p>');

@@ -29,7 +29,7 @@ look at helpers/auth for ensureAuthenticated function
 
   * ***GET '/google/callback'*** : if google auth fails it redirects on /login, else on /welcome
 
-  * ***GET '/logout'***: to log out a user from the app and redirect on /login
+  * ***GET '/logout'*** : to log out a user from the app and redirect on /login
 
 
 ### events.js
@@ -56,6 +56,8 @@ look at helpers/auth for ensureAuthenticated function
   * ***PUT '/delete/:id'*** : used in my events page to leave an event joined. Then notify the user who joined the even by AMQP
 
 
+### chat.js
+  * ***GET '/chat'*** : to show chat page
 
 ## Config folder
 
@@ -97,9 +99,9 @@ used to contain passport middleware functions, the email is used as key id
 
 
 ## Other folders and app.js
-  * models folder contains database schemas for users and events
-  * public folder contains css files and images
-  * app.js is the main file, first establish connection with mongoDB and amqp. Set the view engine, middlewares, global variables and the static folder. Then starts the server
+  * "models" folder contains database schemas for users and events
+  * "public" folder contains css files and images
+  * **app.js** is the main file, first establish connection with mongoDB and amqp. Set the view engine, middlewares, global variables and the static folder. Then starts the server
 
 
 

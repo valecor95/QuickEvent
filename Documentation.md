@@ -5,7 +5,7 @@ look at helpers/auth for ensureAuthenticated function
 ### index.js
   * ***GET '/'*** : home page, it shows all events in the DB created from all users
 
-  * ***GET '/welcome'*** : showed after login
+  * ***GET '/welcome'*** : welcome page showed after login
 
   * ***GET '/about'*** : standard about page
 
@@ -33,7 +33,7 @@ look at helpers/auth for ensureAuthenticated function
 
 
 ### events.js
-  * ***GET '/myevents'*** : to show user events. for first, events created by the user. Then, events joined by the user
+  * ***GET '/myevents'*** : to show user events. For first, events created by the user. Then, events joined by the user
 
   * ***GET '/createEvents'*** : to show the 'create new event' form
 
@@ -51,9 +51,9 @@ look at helpers/auth for ensureAuthenticated function
 
   * ***POST '/comment/:id'*** : used in the show event page to add a new comment on the event and store it in the DB
 
-  * ***PUT '/join/:id'*** : used in the show event page to join an event, if not already joined, and store it in the DB. Then notify all users who joined the even by AMQP
+  * ***PUT '/join/:id'*** : used in the show event page to join an event, if not already joined, and store it in the DB. Then notify the user who created the event by AMQP
 
-  * ***PUT '/delete/:id'*** : used in my events page to leave an event joined. Then notify the user who joined the even by AMQP
+  * ***PUT '/delete/:id'*** : used in my events page to leave an event joined. Then notify the user who created the event by AMQP
 
 
 ### chat.js
@@ -101,9 +101,43 @@ used to contain passport middleware functions, the email is used as key id
 ## Other folders and app.js
   * "models" folder contains database schemas for users and events
   * "public" folder contains css files and images
-  * **app.js** is the main file, first establish connection with mongoDB and amqp. Set the view engine, middlewares, global variables and the static folder. Then starts the server
+  * **app.js** is the main file, first establish connection with mongoDB and amqp and manages the socket.io connection. Set the view engine, middlewares, global variables and the static folder. Then starts the server
 
 
+## How QuickEvent use AMQP and Socket.io (WebSocket)
+Our application is provided with a chat service and a real-time notification. This with the use of AMQP (Rabbit MQ) and Socket.io (WebSockets).
+
+### Chat service
+In this service we use Socket.io (that use WebSockets) for allows the real-time exchange of messages.
+AMQP is used for save all messages and download it when a user refresh the page. We have a topic exchange called "chat" and a queue for each user called "chat+email". (Note: email is a primary key in the app)
+
+Everything is managed by the event based programming of Socket.io in this way:
+
+* **Connection and Download of messages**
+1) When a user open "chat" page send an event called "chatstart" that request the connection:
+
+![img chatconnection-client](http://i67.tinypic.com/2cyfqk8.png)
+
+2) Server receives a "chatstart" event and open an AMQP connection, bind the named queue "chat+email" (where email is the email of the user that requested the connection), download all messages from the queue and finally send it to the client via Socket.io (WS):
+
+![img chatstart-server](http://i64.tinypic.com/16c17xw.png)
+
+3) Client receives "chat+email" and prints all downloaded messages in chat page:
+
+![img handle-chat+email-client](http://i64.tinypic.com/s6sigl.png)
+
+* **Exchange of messages**
+1) While a user writes a message client send a "typing" event to server:
+
+![img typing-client](http://i64.tinypic.com/2e4kfna.png)
+
+2) Server receives "typing" event and send a "typing" event to all user connected except me:
+
+![img typing-server](http://i67.tinypic.com/16lh5io.png)
+
+3) Client receive "typing" event and print "name is typing a message...":
+
+![img handle-typing-event](http://i67.tinypic.com/2s6kar9.png)
 
 ## Structure
 ```

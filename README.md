@@ -1,5 +1,5 @@
 # QuickEvent
-[img logo](http://i65.tinypic.com/mc7mg1.jpg)
+![img logo](http://i65.tinypic.com/mc7mg1.jpg)
 
 QuickEvent is a REST web application based on Nodejs with Express for “Reti di calcolatori” course at university of Sapienza. 
 The purpose of the app is to easily share and join events.

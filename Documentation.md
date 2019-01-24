@@ -1,3 +1,5 @@
+#Documentation
+
 ## Defined REST APIs:
 All Rest APIs are in "routes" folder, divided into four js files.
 look at helpers/auth for ensureAuthenticated function
@@ -162,12 +164,12 @@ Everything is managed by the event based programming of Socket.io in this way:
 
 ### Notification service
 In this service we use Socket.io for allows the real-time sending of notifications.
-AMQP is used for sends and receivs all notifications. We have a topic exchange called "notify" and a queue for each user called "email" (Note: email is a primary key in the app). Each queue have two key: "email" for personal notification and "all" for notifications for everyone.
+AMQP is used for sends and receivs all notifications. We have a topic exchange called "notify" and a queue for each user called "email" (Note: email is a primary key in the app). Each queue have two key: "email" for personal notifications and "all" for notifications for everyone.
 
 Everything is managed by the event based programming of Socket.io in this way:
-(Example where a user creates an event and server send a notification to all users connected. We do a similar method also for the other event. See "routes/events.js")
+(Example where a user creates an event and server send a notification to all users connected. We use a similar method also for the other events. See "routes/events.js")
 
-1) After login user will be in welcome page. Here client sends to server a "notify" event with its email:
+1) After login, user will be in welcome page. Here client sends to server a "notify" event with its email:
 
 ![img notify-connection](http://i67.tinypic.com/bgshli.png)
 (welcome.handlebars)
@@ -177,12 +179,13 @@ Everything is managed by the event based programming of Socket.io in this way:
 ![img receive notification](http://i66.tinypic.com/jsotts.png)
 (app.js)
 
-3) - When client receives "ack" event shows the button to enter the application (this ensures connection to amqp):
+3) 
+  - When client receives "ack" event shows the button to enter the application (this ensures connection to amqp):
 
 ![img ack](http://i68.tinypic.com/2zoaosn.jpg)
 (main.handlebars)
 
-   - When client receives an "email" event prints a new notification on top of the page:
+  - When client receives an "email" event prints a new notification on top of the page:
 
 ![img client-notification](http://i63.tinypic.com/2mhhf6a.png) 
 (main.handlebars)

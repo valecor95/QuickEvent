@@ -105,10 +105,10 @@ used to contain passport middleware functions, the email is used as key id
 
 
 ## How QuickEvent use AMQP and Socket.io (WebSocket)
-Our application is provided with a chat service and a real-time notification. This with the use of AMQP (Rabbit MQ) and Socket.io (WebSockets).
+Our application is provided with a chat service and a real-time notification service. This is possible with the use of AMQP (Rabbit MQ) and Socket.io.
 
 ### Chat service
-In this service we use Socket.io (that use WebSockets) for allows the real-time exchange of messages.
+In this service we use Socket.io for allows the real-time exchange of messages.
 AMQP is used for save all messages and download it when a user refresh the page. We have a topic exchange called "chat" and a queue for each user called "chat+email". (Note: email is a primary key in the app)
 
 Everything is managed by the event based programming of Socket.io in this way:
@@ -117,27 +117,81 @@ Everything is managed by the event based programming of Socket.io in this way:
 1) When a user open "chat" page send an event called "chatstart" that request the connection:
 
 ![img chatconnection-client](http://i67.tinypic.com/2cyfqk8.png)
+(chat.handlebars)
 
-2) Server receives a "chatstart" event and open an AMQP connection, bind the named queue "chat+email" (where email is the email of the user that requested the connection), download all messages from the queue and finally send it to the client via Socket.io (WS):
+2) Server receives a "chatstart" event and open an AMQP connection, bind the named queue "chat+email" (where email is the email of the user that requested the connection), download all messages from the queue and finally send it to the client via Socket.io:
 
 ![img chatstart-server](http://i64.tinypic.com/16c17xw.png)
+(app.js)
 
 3) Client receives "chat+email" and prints all downloaded messages in chat page:
 
 ![img handle-chat+email-client](http://i64.tinypic.com/s6sigl.png)
+(main.handlebars)
 
 * **Exchange of messages**
-1) While a user writes a message client send a "typing" event to server:
+1) While a user writes a message client sends a "typing" event with its name to server:
 
 ![img typing-client](http://i64.tinypic.com/2e4kfna.png)
+(main.handlebars)
 
-2) Server receives "typing" event and send a "typing" event to all user connected except me:
+2) Server receives "typing" event and sends a "typing" event to all user connected except me:
 
 ![img typing-server](http://i67.tinypic.com/16lh5io.png)
+(app.js)
 
-3) Client receive "typing" event and print "name is typing a message...":
+3) Client receives "typing" event and prints "name is typing a message...":
 
 ![img handle-typing-event](http://i67.tinypic.com/2s6kar9.png)
+(main.handlebars)
+
+4) When a user sends a message, the client sends a "chat" event with message and its name as parameters to the server:
+
+![img invio-msg-client](http://i66.tinypic.com/28busnk.png)
+(main.handlebars)
+
+5) Server receives "chat" event and sends a "chat" event to all users connected. Then open an AMQP connection and sends the message to the topic exchange called 'chat':
+
+![img chat-server](http://i66.tinypic.com/2zi8qko.jpg)
+(app.js)
+
+6) Client receivs "chat" event and prints the message received in the chat:
+
+![img handle-chat-client](http://i65.tinypic.com/dx0pah.jpg)
+(main.handlebars)
+
+### Notification service
+In this service we use Socket.io for allows the real-time sending of notifications.
+AMQP is used for sends and receivs all notifications. We have a topic exchange called "notify" and a queue for each user called "email" (Note: email is a primary key in the app). Each queue have two key: "email" for personal notification and "all" for notifications for everyone.
+
+Everything is managed by the event based programming of Socket.io in this way:
+(Example where a user creates an event and server send a notification to all users connected. We do a similar method also for the other event. See "routes/events.js")
+
+1) After login user will be in welcome page. Here client sends to server a "notify" event with its email:
+
+![img notify-connection](http://i67.tinypic.com/bgshli.png)
+(welcome.handlebars)
+
+2) Server receives "notify" event and sends an "ack" event to the client. Then remains listening for notification. When receivs a new notification sends it to the client with an "email" event:
+
+![img receive notification](http://i66.tinypic.com/jsotts.png)
+(app.js)
+
+3) - When client receives "ack" event shows the button to enter the application (this ensures connection to amqp):
+
+![img ack](http://i68.tinypic.com/2zoaosn.jpg)
+(main.handlebars)
+
+   - When client receives an "email" event prints a new notification on top of the page:
+
+![img client-notification](http://i63.tinypic.com/2mhhf6a.png) 
+(main.handlebars)
+
+4) When user creates an event send a notification to the topic exchange called "notify" with key "all":
+
+![img send-notification](http://i67.tinypic.com/2hg6wwj.png)
+("/routes/events.js")
+
 
 ## Structure
 ```

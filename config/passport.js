@@ -42,8 +42,6 @@ module.exports = function(passport){
         function(access_token, refresh_token, profile, done) {
             // asynchronous
             process.nextTick(function() {
-                //console.log(profile);
-                //console.log(profile.id);
 
                 // find the user in the database based on their email
                 User.findOne({ email:profile.emails[0].value
@@ -60,7 +58,6 @@ module.exports = function(passport){
                         return done(null, user); // user found, return that user
                     } else {
                         // if there is no user found with that facebook id, create them
-                        //console.log("NOTFOUND");
                         var newUser = new User();
 
                         // set all of the facebook information in our user model
@@ -91,8 +88,6 @@ module.exports = function(passport){
       callbackURL:'/auth/google/callback',
       proxy: true
     }, (accessToken, refreshToken, profile, done) => {
-      //console.log(accessToken);
-      //console.log(profile);
 
       const newUser = {
         googleID: profile.id,
@@ -121,14 +116,11 @@ module.exports = function(passport){
 
 
   passport.serializeUser(function(user, done) {
-      //console.log('serializing user: ');
-      //console.log(user);
       done(null, user._id);
   });
 
   passport.deserializeUser(function(id, done) {
       User.findById(id, function(err, user) {
-          //console.log('deserializing user:',user);
           done(err, user);
       });
   });

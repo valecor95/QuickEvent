@@ -325,7 +325,7 @@ router.delete('/:id', (req, res) => {
   User.update({}, {
     $pull: {events:req.params.id}
   });
-  /*
+
   Event.findOne({
     _id: req.params.id
     })
@@ -339,22 +339,23 @@ router.delete('/:id', (req, res) => {
             conn.createChannel(function(err, ch) {
               var ex = 'notify';
               var key = user.email;
-              var msg = "ATTENTION: the event that you're joined " + event.name + " has been canceled";
+              var msg = "ATTENTION: the event '" + event.name + "' that you're joined has been canceled";
               ch.assertExchange(ex, 'topic', {durable: false});
               ch.publish(ex, key, new Buffer.from(msg));
             });
-            setTimeout(function() { conn.close();}, 500);
+            setTimeout(function() { 
+              conn.close();
+              Event.deleteOne({
+                _id: req.params.id
+                })
+                .then(event => {
+                  req.flash('error_msg', 'Event removed');
+                  res.redirect('/events/myEvents');
+                });
+            }, 2500);
           });
         });
       }
-    });
-    */
-  Event.deleteOne({
-    _id: req.params.id
-    })
-    .then(event => {
-      req.flash('error_msg', 'Event removed');
-      res.redirect('/events/myEvents');
     });
 });
 

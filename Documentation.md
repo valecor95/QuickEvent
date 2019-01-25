@@ -1,4 +1,4 @@
-#Documentation
+# Documentation
 
 ## Defined REST APIs:
 All Rest APIs are in "routes" folder, divided into four js files.
@@ -49,7 +49,7 @@ look at helpers/auth for ensureAuthenticated function
 
   * ***PUT ':id'*** : to edit events. Takes details from 'create new event' form, checks for errors and add the event in DB. Then notify all users who joined the event by AMQP
 
-  * ***DELETE ':id'*** : to delete the event in the DB and remove it from users event joined list
+  * ***DELETE ':id'*** : to delete the event in the DB and remove it from users event joined list. Also send a notify to all joiners by AMQP
 
   * ***POST '/comment/:id'*** : used in the show event page to add a new comment on the event and store it in the DB
 
@@ -126,7 +126,7 @@ Everything is managed by the event based programming of Socket.io in this way:
 ![img chatstart-server](http://i64.tinypic.com/16c17xw.png)
 (app.js)
 
-3) Client receives "chat+email" and prints all downloaded messages in chat page:
+3) Client receives "chat+email" event and prints all downloaded messages in chat page:
 
 ![img handle-chat+email-client](http://i64.tinypic.com/s6sigl.png)
 (main.handlebars)
@@ -137,17 +137,17 @@ Everything is managed by the event based programming of Socket.io in this way:
 ![img typing-client](http://i64.tinypic.com/2e4kfna.png)
 (main.handlebars)
 
-2) Server receives "typing" event and sends a "typing" event to all user connected except me:
+2) Server receives "typing" event and sends a "typing" event to all users connected except me:
 
 ![img typing-server](http://i67.tinypic.com/16lh5io.png)
 (app.js)
 
-3) Client receives "typing" event and prints "name is typing a message...":
+3) Client receives "typing" event and prints " 'name' is typing a message...":
 
 ![img handle-typing-event](http://i67.tinypic.com/2s6kar9.png)
 (main.handlebars)
 
-4) When a user sends a message, the client sends a "chat" event with message and its name as parameters to the server:
+4) When a user sends a message, client sends a "chat" event, with the message and its name as parameters, to the server:
 
 ![img invio-msg-client](http://i66.tinypic.com/28busnk.png)
 (main.handlebars)
@@ -194,6 +194,7 @@ Everything is managed by the event based programming of Socket.io in this way:
 
 ![img send-notification](http://i67.tinypic.com/2hg6wwj.png)
 ("/routes/events.js")
+
 
 
 ## Structure

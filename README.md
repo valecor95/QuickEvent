@@ -30,7 +30,7 @@ https://github.com/RC-ivagnescoretti/QuickEvent
 7. [x] The REST APIs implemented in APP must be documented on GIT and must be validated with a test case
 
 
-#### Scritto da: 
+#### Write by: 
 - Valerio Coretti
 - Manuel Ivagnes
 

@@ -50,13 +50,13 @@ io.on('connection', function(socket){
               ch.assertExchange(ex, 'topic', {durable: false});
 
               ch.assertQueue(data, {exclusive: false}, function(err, q) {
-                  console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
+                  console.log(" [*] Waiting for messages in %s", q.queue);
                   io.emit(data+"ack");  //Ack to sure the connection
                   ch.bindQueue(q.queue, ex, data);
                   ch.bindQueue(q.queue, ex, "all");
                   ch.consume(q.queue, function(msg) {
                     io.emit(data, msg.content.toString());
-                    console.log(" [x] %s", msg.content.toString());    
+                    //console.log(" [x] %s", msg.content.toString());    
                   }, {noAck: true});
               });   
           });
@@ -74,11 +74,11 @@ io.on('connection', function(socket){
             ch.assertExchange(ex, 'topic', {durable: false});
 
             ch.assertQueue("chat"+data, {exclusive: false}, function(err, q) {
-                console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q.queue);
+                console.log(" [*] Waiting for messages in %s", q.queue);
                 ch.bindQueue(q.queue, ex, 'chat');
                 ch.consume(q.queue, function(msg) {
                   io.emit("chat"+data, msg.content.toString());
-                  console.log(" [x] %s", msg.content.toString());
+                  //console.log(" [x] %s", msg.content.toString());
                 }, {noAck: false});
             });
         });

@@ -60,6 +60,7 @@ look at helpers/auth for ensureAuthenticated function
 
 ### chat.js
   * ***GET '/chat'*** : to show chat page
+***
 
 ## Config folder
 
@@ -78,8 +79,7 @@ used to contain passport middleware functions, the email is used as key id
   * ***'serializeUser'*** : to get information from a user object to store in a session
 
   * ***'deserializeUser'*** : to take that information and turn it back into a user object
-
-
+***
 
 ## Helpers folder
 
@@ -91,20 +91,19 @@ used to contain passport middleware functions, the email is used as key id
   * ***stripTags*** : to remove html syntax from output text
 
   * ***formatDate*** : to format dates on output text
-
+***
 
 ## Views folder
   - the view engine is based on handlebars and decorated with bootstrap and awesome icons
   - views are divided in the same way as routes. Plus there is layouts for main page, that provides connection to bootstrap, awesome icons and handle notifies and chat throw WebSocket and Socket.io.
   Partials provides the navbar and messages/errors sections
-
-
+***
 
 ## Other folders and app.js
   * "models" folder contains database schemas for users and events
   * "public" folder contains css files and images
   * **app.js** is the main file, first establish connection with mongoDB and amqp and manages the socket.io connection. Set the view engine, middlewares, global variables and the static folder. Then starts the server
-
+***
 
 ## How QuickEvent use AMQP and Socket.io (WebSocket)
 Our application is provided with a chat service and a real-time notification service. This is possible with the use of AMQP (Rabbit MQ) and Socket.io.
@@ -194,7 +193,7 @@ Everything is managed by the event based programming of Socket.io in this way:
 
 ![img send-notification](http://i67.tinypic.com/2hg6wwj.png)
 ("/routes/events.js")
-
+***
 
 
 ## Structure

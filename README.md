@@ -7,17 +7,12 @@ Users can also interact with a chat and notify system based on Socket.io and AMQ
 
 - [Presentation]()
 - [Documentation](https://github.com/RC-ivagnescoretti/QuickEvent/blob/master/Documentation.md)
+***
 
 ## How to use 
 
 - The application is accessible on “Heroku” at link:
-
-- You can find the “QuickEvent” project at the following Git Hub repository:
-https://github.com/RC-ivagnescoretti/QuickEvent
-
-- In this repository there is a detailed [Documentation](https://github.com/RC-ivagnescoretti/QuickEvent/blob/master/Documentation.md)) that describes all the services provided by the app.
-
-- You will also find the code for an even deeper inspection.
+***
 
 ## Prerequisites
 
@@ -28,7 +23,7 @@ https://github.com/RC-ivagnescoretti/QuickEvent
 5. [x] Websocket and AMQP must be used
 6. [x] The project must be on GIT and documented with a README
 7. [x] The REST APIs implemented in APP must be documented on GIT and must be validated with a test case
-
+***
 
 #### Write by: 
 - Valerio Coretti

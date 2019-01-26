@@ -330,31 +330,41 @@ router.delete('/:id', (req, res) => {
     _id: req.params.id
     })
     .then(event =>{
-      for(i = 0; i < event.joiners.length; i++){
-        User.findOne({
-          _id: event.joiners[i]._id
-        }).then(user => {
-          // Send a notify to all joiners
-          amqp.connect(keys.amqpURI, function(err, conn) {
-            conn.createChannel(function(err, ch) {
-              var ex = 'notify';
-              var key = user.email;
-              var msg = "ATTENTION: the event '" + event.name + "' that you're joined has been canceled";
-              ch.assertExchange(ex, 'topic', {durable: false});
-              ch.publish(ex, key, new Buffer.from(msg));
+      if(event.joiners.length > 0){
+        for(i = 0; i < event.joiners.length; i++){
+          User.findOne({
+            _id: event.joiners[i]._id
+          }).then(user => {
+            // Send a notify to all joiners
+            amqp.connect(keys.amqpURI, function(err, conn) {
+              conn.createChannel(function(err, ch) {
+                var ex = 'notify';
+                var key = user.email;
+                var msg = "ATTENTION: the event '" + event.name + "' that you're joined has been canceled";
+                ch.assertExchange(ex, 'topic', {durable: false});
+                ch.publish(ex, key, new Buffer.from(msg));
+              });
+              setTimeout(function() { 
+                conn.close();
+                Event.deleteOne({
+                  _id: req.params.id
+                  })
+                  .then(event => {
+                    req.flash('error_msg', 'Event removed');
+                    res.redirect('/events/myEvents');
+                  });
+              }, 2500);
             });
-            setTimeout(function() { 
-              conn.close();
-              Event.deleteOne({
-                _id: req.params.id
-                })
-                .then(event => {
-                  req.flash('error_msg', 'Event removed');
-                  res.redirect('/events/myEvents');
-                });
-            }, 2500);
           });
-        });
+        }
+      }else{
+        Event.deleteOne({
+          _id: req.params.id
+          })
+          .then(event => {
+            req.flash('error_msg', 'Event removed');
+            res.redirect('/events/myEvents');
+          });
       }
     });
 });

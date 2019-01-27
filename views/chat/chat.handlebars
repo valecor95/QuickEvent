@@ -1,5 +1,5 @@
 <div class="card card-body mb-2">
-  <div class="card-title"><b>Chat with other users</b></div>  
+  <div class="card-title"><b>Chat with other users</b></div>
   {{#if user}}
   <form id="ws-form" action="">
     <div id="simple-chat">
@@ -23,10 +23,9 @@
 <script>
       /********** Handle Chat Message throw WebSocket and Socket.io *********/
       $(function () {
-        var socket = window.io.connect('http://localhost:5000/', {transports:['websocket']});
+        var socket = window.io.connect('https://ancient-anchorage-97115.herokuapp.com', {transports:['websocket']});
 
         // Send an event that activates chat message's queue and download all prev messages
         socket.emit('chatstart', $('#email').val());
       });
 </script>
-

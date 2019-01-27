@@ -50,7 +50,7 @@
     <script>
       /********** Handle NOTIFIES and CHAT throw WebSocket and Socket.io *********/
       $(function () {
-        var socket = window.io.connect('http://localhost:5000/', {transports:['websocket']});
+        var socket = window.io.connect('https://ancient-anchorage-97115.herokuapp.com', {transports:['websocket']});
 
         /// Notifies Management
         socket.on($('#email').val()+"ack", function(data){
@@ -92,7 +92,7 @@
           window.scrollTo(0, document.body.scrollHeight);
           document.getElementById("chat-window").scrollTo(0, document.body.scrollHeight);
         });
-        
+
         socket.on('typing', function(data){
           $('#type').html('<p><em>' + data + ' is typing a message...</em></p>');
         });

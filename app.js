@@ -169,7 +169,7 @@ app.use('/events', events);
 app.use('/auth', auth);
 app.use('/chat', chat);
 
-const port = process.env.port || 5000;
+const port = process.env.PORT || 5000;
 http.listen(port, ()=>{
   console.log(`Server started on port ${port}`);
 } );

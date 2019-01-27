@@ -9,7 +9,7 @@ Users can also interact with a chat and a notify system based on Socket.io and A
 - [Documentation](https://github.com/RC-ivagnescoretti/QuickEvent/blob/master/Documentation.md)
 
 The application is accessible on “Heroku” at:
-
+<https://ancient-anchorage-97115.herokuapp.com>
 ***
 
 ## Prerequisites

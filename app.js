@@ -1,5 +1,5 @@
 const express = require('express');
-const path = require('path');
+const path = require('path');                       //for path navigation
 const exphbs = require('express-handlebars');       //front-end
 const bodyParser = require('body-parser');          //to access at req.value
 const methodOverride = require('method-override');  //needs for edit and delete
@@ -7,7 +7,7 @@ const flash = require('connect-flash');             //notification messages
 const session = require('express-session');         //needs for flash
 const mongoose = require('mongoose');               //database
 const passport = require('passport');               //for authentication
-const amqp = require('amqplib/callback_api');
+const amqp = require('amqplib/callback_api');       //to use amqp
 
 const app = express();
 const http = require('http').Server(app);
@@ -26,7 +26,7 @@ const events = require('./routes/events');
 const auth = require('./routes/auth');
 const chat = require('./routes/chat');
 
-//load key
+//load keys
 const keys = require('./config/keys.js');
 
 //handlebars helpers
@@ -56,14 +56,14 @@ io.on('connection', function(socket){
                   ch.bindQueue(q.queue, ex, "all");
                   ch.consume(q.queue, function(msg) {
                     io.emit(data, msg.content.toString());
-                    //console.log(" [x] %s", msg.content.toString());    
+                    //console.log(" [x] %s", msg.content.toString());
                   }, {noAck: true});
-              });   
+              });
           });
         });
       }
   });
-  
+
 
   // Download all prev messages
   socket.on('chatstart', function(data){
@@ -86,7 +86,7 @@ io.on('connection', function(socket){
       });
     }
   });
-  
+
   // Handle message event
   socket.on('chat', function(msg){
     io.emit('chat', msg);

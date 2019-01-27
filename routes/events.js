@@ -322,19 +322,23 @@ router.put('/delete/:id', (req, res) => {
 
 //delete event
 router.delete('/:id', (req, res) => {
-  User.update({}, {
-    $pull: {events:req.params.id}
-  });
 
   Event.findOne({
     _id: req.params.id
     })
     .then(event =>{
       if(event.joiners.length > 0){
+
         for(i = 0; i < event.joiners.length; i++){
+          console.log('inside loop');
           User.findOne({
             _id: event.joiners[i]._id
           }).then(user => {
+
+            //to delete also in the user (events) list
+            user.events.pull(event);
+            user.save();
+
             // Send a notify to all joiners
             amqp.connect(keys.amqpURI, function(err, conn) {
               conn.createChannel(function(err, ch) {
@@ -344,7 +348,7 @@ router.delete('/:id', (req, res) => {
                 ch.assertExchange(ex, 'topic', {durable: false});
                 ch.publish(ex, key, new Buffer.from(msg));
               });
-              setTimeout(function() { 
+              setTimeout(function() {
                 conn.close();
                 Event.deleteOne({
                   _id: req.params.id
@@ -353,7 +357,7 @@ router.delete('/:id', (req, res) => {
                     req.flash('error_msg', 'Event removed');
                     res.redirect('/events/myEvents');
                   });
-              }, 2500);
+              }, 1000);
             });
           });
         }
@@ -368,6 +372,5 @@ router.delete('/:id', (req, res) => {
       }
     });
 });
-
 
 module.exports = router;

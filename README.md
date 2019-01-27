@@ -1,17 +1,15 @@
 # QuickEvent
 ![img logo](http://i65.tinypic.com/mc7mg1.jpg)
 
-QuickEvent is a REST web application based on Nodejs with Express for “Reti di calcolatori” course at university of Sapienza. 
+QuickEvent is a REST web application based on Nodejs with Express for “Reti di calcolatori” course at university of Sapienza.
 The purpose of the app is to easily share and join events.
-Users can also interact with a chat and notify system based on Socket.io and AMQP. Fo more info see 
+Users can also interact with a chat and a notify system based on Socket.io and AMQP. Fo more info see
 
 - [Presentation]()
 - [Documentation](https://github.com/RC-ivagnescoretti/QuickEvent/blob/master/Documentation.md)
-***
 
-## How to use 
+The application is accessible on “Heroku” at:
 
-- The application is accessible on “Heroku” at link:
 ***
 
 ## Prerequisites
@@ -25,9 +23,6 @@ Users can also interact with a chat and notify system based on Socket.io and AMQ
 7. [x] The REST APIs implemented in APP must be documented on GIT and must be validated with a test case
 ***
 
-#### Write by: 
+#### Write by:
 - Valerio Coretti
 - Manuel Ivagnes
-
-
-

@@ -5,11 +5,10 @@ QuickEvent is a REST web application based on Nodejs with Express for “Reti di
 The purpose of the app is to easily share and join events.
 Users can also interact with a chat and a notify system based on Socket.io and AMQP. Fo more info see
 
-- [Presentation]()
+- [Presentation](https://drive.google.com/file/d/1b6jffa-pjVW8liCfBoi6_jdCvAt4kxCO/view?usp=sharing)
 - [Documentation](https://github.com/RC-ivagnescoretti/QuickEvent/blob/master/Documentation.md)
 
-The application is accessible on “Heroku” at:
-<https://ancient-anchorage-97115.herokuapp.com>
+The application is accessible on “Heroku” at <https://quickeventapp.herokuapp.com/>
 ***
 
 ## Prerequisites

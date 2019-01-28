@@ -50,7 +50,7 @@
     <script>
       /********** Handle NOTIFIES and CHAT throw WebSocket and Socket.io *********/
       $(function () {
-        var socket = window.io.connect('https://ancient-anchorage-97115.herokuapp.com', {transports:['websocket']});
+        var socket = window.io.connect('https://quickeventapp.herokuapp.com/', {transports:['websocket']});
 
         /// Notifies Management
         socket.on($('#email').val()+"ack", function(data){

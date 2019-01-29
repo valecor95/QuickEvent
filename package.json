@@ -22,7 +22,7 @@
     "mongoose": "^5.3.14",
     "oauth": "^0.9.15",
     "passport": "^0.4.0",
-    "passport-facebook": "^2.1.1",
+    "passport-dropbox-oauth2": "^1.1.0",
     "passport-google-oauth20": "^1.0.0",
     "passport-local": "^1.0.0",
     "passport-oauth2": "^1.4.0",

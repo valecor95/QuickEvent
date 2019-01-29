@@ -92,14 +92,14 @@ router.post('/register', (req, res) => {
 
 
 
-//FACEBOOK authentication routes
-router.get('/facebook',
-	  passport.authenticate('facebook', {scope : ['email'] })
+//GITHUB authentication routes
+router.get('/dropbox',
+	  passport.authenticate('dropbox-oauth2')
 );
 
 //return from authenticate
-router.get('/facebook/callback',
-	passport.authenticate('facebook', {
+router.get('/dropbox/callback',
+	passport.authenticate('dropbox-oauth2', {
 	    successRedirect : '/welcome',
 	    failureRedirect : '/auth/login'
 	})

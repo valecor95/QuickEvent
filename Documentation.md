@@ -23,9 +23,9 @@ look at helpers/auth for ensureAuthenticated function
 
   * ***GET '/userPage'*** : to show user page
 
-  * ***GET '/facebook'*** : to start facebook oauth via passport (see also passport.js)
+  * ***GET '/dropbox'*** : to start dropbox oauth via passport (see also passport.js)
 
-  * ***GET '/facebook/callback'*** : if facebook auth fails it redirects on /login, else on /welcome
+  * ***GET '/dropbox/callback'*** : if dropbox auth fails it redirects on /login, else on /welcome
 
   * ***GET '/google'*** : to start google oauth via passport (see also passport.js)
 
@@ -73,9 +73,9 @@ file used to contain services URI, ID and oauth secrets
 used to contain passport middleware functions, the email is used as key id
   * ***'local'*** : used for local authentication. It also executes the password's encryption via bcrypt
 
-  * ***'facebook'*** : provides access by facebook
+  * ***'dropbox-oauth2'*** : provides access by dropbox-oauth2
 
-  * ***'facebook'*** : provides access by google
+  * ***'google'*** : provides access by google
 
   * ***'serializeUser'*** : to get information from a user object to store in a session
 

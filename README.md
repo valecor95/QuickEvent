@@ -3,12 +3,17 @@
 
 QuickEvent is a REST web application based on Nodejs with Express for “Reti di calcolatori” course at university of Sapienza.
 The purpose of the app is to easily share and join events.
-Users can also interact with a chat and a notify system based on Socket.io and AMQP. Fo more info see
+Users can also interact with a chat and a notify system based on Socket.io and AMQP. 
+For more info see
 
-- [Presentation](https://drive.google.com/file/d/1b6jffa-pjVW8liCfBoi6_jdCvAt4kxCO/view?usp=sharing)
+- [Presentation](https://drive.google.com/open?id=1-fvbje13aQHzzCHMWpTSnzulRGSbXyrF)
 - [Documentation](https://github.com/RC-ivagnescoretti/QuickEvent/blob/master/Documentation.md)
 
 The application is accessible on “Heroku” at <https://quickeventapp.herokuapp.com/>
+
+**Note** : Source code is written to work in a local environment on port 5000
+
+
 ***
 
 ## Prerequisites

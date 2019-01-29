@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -50,7 +50,7 @@
     <script>
       /********** Handle NOTIFIES and CHAT throw WebSocket and Socket.io *********/
       $(function () {
-        var socket = window.io.connect('https://quickeventapp.herokuapp.com/', {transports:['websocket']});
+        var socket = window.io.connect('http://localhost:5000/', {transports:['websocket']});
 
         /// Notifies Management
         socket.on($('#email').val()+"ack", function(data){

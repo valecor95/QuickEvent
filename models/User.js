@@ -4,9 +4,8 @@ const Schema = mongoose.Schema;
 // User Schema
 const UserSchema = new Schema({
   email:                  { type: String, required: true },
-  facebook_access_token:  { type: String, required: false },
+  dropboxID:               { type: String, required: false },
   googleID:               { type: String, required: false },
-  google_ac_token:        { type: String, required: false },
   firstName:              { type: String, required: true },
   lastName:               { type: String, required: true },
   password:               { type: String, required: false },

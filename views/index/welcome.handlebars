@@ -18,7 +18,7 @@
         $("nav").css('display', 'none');
         $("#welcome").css('margin-top', '200px');
 
-        var socket = window.io.connect('https://quickeventapp.herokuapp.com/', {transports:['websocket']});
+        var socket = window.io.connect('http://localhost:5000/', {transports:['websocket']});
 
         // Send an event that activates notification queue
         socket.emit('notify', $('#email').val());

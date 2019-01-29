@@ -179,17 +179,19 @@ router.put('/:id', (req, res) => {
           User.findOne({
             _id: event.joiners[i]._id
           }).then(user => {
-            // Send a notify to all joiners
-            amqp.connect(keys.amqpURI, function(err, conn) {
-              conn.createChannel(function(err, ch) {
-                var ex = 'notify';
-                var key = user.email;
-                var msg = "The event '" + req.body.name + "' has been edited";
-                ch.assertExchange(ex, 'topic', {durable: false});
-                ch.publish(ex, key, new Buffer.from(msg));
+            if(user._id.toString() != event.creator._id.toString()){
+              // Send a notify to all joiners
+              amqp.connect(keys.amqpURI, function(err, conn) {
+                conn.createChannel(function(err, ch) {
+                  var ex = 'notify';
+                  var key = user.email;
+                  var msg = "The event '" + req.body.name + "' has been edited";
+                  ch.assertExchange(ex, 'topic', {durable: false});
+                  ch.publish(ex, key, new Buffer.from(msg));
+                });
+                setTimeout(function() { conn.close();}, 500);
               });
-              setTimeout(function() { conn.close();}, 500);
-            });
+            }
           });
         }
 
@@ -251,17 +253,19 @@ router.put('/join/:id', (req, res) => {
             _id: event.creator._id
           })
           .then(user2 => {
-            // Send a notify to event's creator
-            amqp.connect(keys.amqpURI, function(err, conn) {
-              conn.createChannel(function(err, ch) {
-                var ex = 'notify';
-                var key = user2.email;
-                var msg = req.user.firstName + " " + req.user.lastName + " has joined your event '" + event.name + "'";
-                ch.assertExchange(ex, 'topic', {durable: false});
-                ch.publish(ex, key, new Buffer.from(msg));
+            if(user._id.toString() != event.creator._id.toString()){
+              // Send a notify to event's creator
+              amqp.connect(keys.amqpURI, function(err, conn) {
+                conn.createChannel(function(err, ch) {
+                  var ex = 'notify';
+                  var key = user2.email;
+                  var msg = req.user.firstName + " " + req.user.lastName + " has joined your event '" + event.name + "'";
+                  ch.assertExchange(ex, 'topic', {durable: false});
+                  ch.publish(ex, key, new Buffer.from(msg));
+                });
+                setTimeout(function() { conn.close();}, 500);
               });
-              setTimeout(function() { conn.close();}, 500);
-            });
+            }
           });
 
           event.save()
@@ -289,26 +293,28 @@ router.put('/delete/:id', (req, res) => {
           _id: req.user.id
         })
         .then(user => {
+          //to send a notify to event's creator
+          User.findOne({
+            _id: event.creator._id
+          })
+          .then(user2 => {
+            // Send a notify to event's creator
+            if(user._id.toString() != event.creator._id.toString()){
+              amqp.connect(keys.amqpURI, function(err, conn) {
+                conn.createChannel(function(err, ch) {
+                  var ex = 'notify';
+                  var key = user2.email;
+                  var msg = req.user.firstName + " " + req.user.lastName + " has left your event '" + event.name + "'";
+                  ch.assertExchange(ex, 'topic', {durable: false});
+                  ch.publish(ex, key, new Buffer.from(msg));
+                });
+                setTimeout(function() { conn.close();}, 500);
+              });
+            }
           user.events.pull(event);
           user.save();
         });
 
-      //to send a notify to event's creator
-      User.findOne({
-          _id: event.creator._id
-        })
-        .then(user => {
-          // Send a notify to event's creator
-          amqp.connect(keys.amqpURI, function(err, conn) {
-            conn.createChannel(function(err, ch) {
-              var ex = 'notify';
-              var key = user.email;
-              var msg = req.user.firstName + " " + req.user.lastName + " has left your event '" + event.name + "'";
-              ch.assertExchange(ex, 'topic', {durable: false});
-              ch.publish(ex, key, new Buffer.from(msg));
-            });
-            setTimeout(function() { conn.close();}, 500);
-          });
         });
 
       event.save()
@@ -325,51 +331,40 @@ router.delete('/:id', (req, res) => {
 
   Event.findOne({
     _id: req.params.id
-    })
-    .then(event =>{
+    }).then(event =>{
       if(event.joiners.length > 0){
 
         for(i = 0; i < event.joiners.length; i++){
-          console.log('inside loop');
           User.findOne({
             _id: event.joiners[i]._id
           }).then(user => {
-
+            if(user._id.toString() != event.creator._id.toString()){
+              // Send a notify to all joiners
+              amqp.connect(keys.amqpURI, function(err, conn) {
+                conn.createChannel(function(err, ch) {
+                  var ex = 'notify';
+                  var key = user.email;
+                  var msg = "ATTENTION: the event '" + event.name + "' that you're joined has been canceled";
+                  ch.assertExchange(ex, 'topic', {durable: false});
+                  ch.publish(ex, key, new Buffer.from(msg));
+                });
+                setTimeout(function() {conn.close();}, 500);
+              });
+            }
             //to delete also in the user (events) list
             user.events.pull(event);
             user.save();
-
-            // Send a notify to all joiners
-            amqp.connect(keys.amqpURI, function(err, conn) {
-              conn.createChannel(function(err, ch) {
-                var ex = 'notify';
-                var key = user.email;
-                var msg = "ATTENTION: the event '" + event.name + "' that you're joined has been canceled";
-                ch.assertExchange(ex, 'topic', {durable: false});
-                ch.publish(ex, key, new Buffer.from(msg));
-              });
-              setTimeout(function() {
-                conn.close();
-                Event.deleteOne({
-                  _id: req.params.id
-                  })
-                  .then(event => {
-                    req.flash('error_msg', 'Event removed');
-                    res.redirect('/events/myEvents');
-                  });
-              }, 1000);
-            });
-          });
-        }
-      }else{
-        Event.deleteOne({
-          _id: req.params.id
           })
-          .then(event => {
-            req.flash('error_msg', 'Event removed');
-            res.redirect('/events/myEvents');
-          });
+        }
       }
+    }).then(() =>{
+      Event.deleteOne({
+        _id: req.params.id
+        })
+        .then(event => {
+          req.flash('error_msg', 'Event removed');
+          res.redirect('/events/myEvents');
+        });
     });
 });
 

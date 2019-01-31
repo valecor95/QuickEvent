@@ -16,8 +16,7 @@ const EventSchema = new Schema({
     default: Date.now
   },
   details:{
-    type: String,
-    default: 'No details for this event'
+    type: String
   },
   creator:{
     type: Schema.Types.ObjectId,

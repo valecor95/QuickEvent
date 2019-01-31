@@ -31,7 +31,7 @@ module.exports = function(passport){
       })
     }));
 
-    //to access by github
+    //to access by dropbox
     passport.use('dropbox-oauth2',
     new DropboxOAuth2Strategy({
       apiVersion: '2',

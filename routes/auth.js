@@ -92,7 +92,7 @@ router.post('/register', (req, res) => {
 
 
 
-//GITHUB authentication routes
+//DROPBOX authentication routes
 router.get('/dropbox',
 	  passport.authenticate('dropbox-oauth2')
 );
